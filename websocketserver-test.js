@@ -4,9 +4,15 @@ const WebSocketServer = require('ws');
 // Creating a new websocket server
 const wss = new WebSocketServer.Server({ port: 8081 })
  
+var sendLoop = function(server) {
+    server.send("I am from Server...");
+    setTimeout(function() {sendLoop(server)},1500);
+}
+
 // Creating connection using websocket
 wss.on("connection", ws => {
     console.log("new client connected");
+    sendLoop(ws);
     // sending message
     ws.on("message", data => {
         console.log(`Client has sent us: ${data}`)
@@ -19,5 +25,9 @@ wss.on("connection", ws => {
     ws.onerror = function () {
         console.log("Some Error occurred")
     }
+
+    
 });
 console.log("The WebSocket server is running on port 8081");
+
+
