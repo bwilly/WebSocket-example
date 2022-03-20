@@ -7,12 +7,27 @@
 </head>
 <body>
 	<h1>Hello world</h1>
+	<h2 id="myPrinter">Server WS will write here.</h2>
 <script>
-const ws = new WebSocket("ws://pi4-2.local:8081");
-ws.addEventListener("open", () =>{
-  console.log("We are connected");
-  ws.send("How are you?");
-});
+var connectToWS = function() {
+	const ws = new WebSocket("ws://pi4-2.local:8081");
+	ws.addEventListener("open", () =>{
+		console.log("We are connected");
+		ws.send("How are you?");
+	});
+	ws.addEventListener("error", (ev) =>{
+		console.log(ev);
+	})
+	ws.addEventListener("close",() =>{
+		setTimeout(connectToWS,3000);
+	})
+	ws.addEventListener("message",(ev) =>{
+		// console.log("received data from server: " + ev.data);
+		var h2 = document.getElementsByTagName("h2")[0];
+		h2.innerText = h2.innerText + ev.data;
+	})
+}
+connectToWS();
 </script>
 </body>
 </html>
